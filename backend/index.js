@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
-const port = process.env.PORT || 5000; // Use environment variable for port
+const port = process.env.PORT 
 
 // middleware
 app.use(cors());
