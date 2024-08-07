@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
-const port = 5000;
+const port = process.env.PORT || 5000; // Use environment variable for port
 
 // middleware
 app.use(cors());
@@ -16,10 +16,10 @@ app.post("/todos", async (req, res) => {
   try {
     const { description } = req.body;
     const newTodo = await pool.query(
-      "INSERT INTO todo(description) VALUES($1) RETURNING *",
+      "INSERT INTO todo (description) VALUES ($1) RETURNING *",
       [description]
     );
-    res.status(201).json(newTodo.rows[0]); // Changed to res.status(201)
+    res.status(201).json(newTodo.rows[0]);
   } catch (error) {
     console.error(error.message);
     res.status(400).send("An error occurred while creating the todo");
@@ -41,9 +41,7 @@ app.get("/todos", async (req, res) => {
 app.get("/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
+    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [id]);
     res.json(todo.rows[0]);
   } catch (error) {
     console.error(error.message);
@@ -80,5 +78,5 @@ app.delete("/todos/:id", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Listening to Port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
